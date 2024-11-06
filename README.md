@@ -53,6 +53,40 @@ are the equivalent in the different package managers.
 > Since every piece of software needs to have their own entity configuration it is impossible to support all of them.
 > But as many as possible especially the most popular for server environments.
 
+## Use
+### Help
+```bash
+lay --help|-h
+```
+
+### Package manager
+```bash
+lay package <package manager name> <collection name> <entity name> <software name>
+```
+
+### Compile
+```bash
+lay compile <collection name> <entity name> <software name>
+```
+
+```bash
+lay compile <entity path> <software name>
+```
+
+### Container
+```bash
+lay container --engine|-e <container engine> <collection name> <entity name> <software name>
+```
+
+```bash
+lay container --engine|-e <container engine> <entity path> <software name>
+```
+
+## Env variables
+```bash
+LAY_CONTAINER_ENGINE="podman"
+```
+
 ## ©️ Copyright
 - "<a rel="noopener noreferrer" href="https://www.flickr.com/photos/37667416@N04/3987005186">&#039;&#039;All the light and life of day came on ; and amidst it all, and pressing down the grass whose every blade bore twenty tiny lives, lay the dead man, with his stark and rigid face turned upward to the sky.&#039;&#039;</a>" by <a rel="noopener noreferrer" href="https://www.flickr.com/photos/37667416@N04">Biblioteca Rector Machado y Nuñez</a> is marked with <a rel="noopener noreferrer" href="https://creativecommons.org/publicdomain/mark/1.0/?ref=openverse">Public Domain Mark 1.0 <img src="https://mirrors.creativecommons.org/presskit/icons/pd.svg" style="height: 1em; margin-right: 0.125em; display: inline;" /></a>.
 
