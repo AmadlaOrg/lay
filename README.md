@@ -53,10 +53,27 @@ are the equivalent in the different package managers.
 > Since every piece of software needs to have their own entity configuration it is impossible to support all of them.
 > But as many as possible especially the most popular for server environments.
 
-## 🕹️ Use
+## 🕹️ Usage
+There are different ways to use this tool. The main way to use it is with Amadla/hery but to keep things flexible it is
+also possible to specify what software and how it needs to be installed.
+
+> Amadla [Entity Application](https://github.com/AmadlaOrg/EntityApplication) is the entity that is supported.
+
 ### Help
 ```bash
 lay --help|-h
+```
+
+### With Entity (Amadla)
+Amadla [Entity Application](https://github.com/AmadlaOrg/EntityApplication) is the entity that is supported.
+
+```bash
+lay entity <collection name> <entity name>
+```
+
+Example:
+```bash
+lay entity amadla MyApplications
 ```
 
 ### Package manager
