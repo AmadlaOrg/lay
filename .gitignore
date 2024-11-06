@@ -23,3 +23,14 @@ go.work.sum
 
 # env file
 .env
+
+# Editor
+.idea/
+
+Makefile
+tests.sh
+
+# Build
+lay
+
+allcode.txt
