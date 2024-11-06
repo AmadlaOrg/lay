@@ -9,7 +9,7 @@ application or a package can be added to a system.
 
 So instead of looking for the right package name or the right command to pass to install a software, lay takes care of it.
 
-## Benefits
+## Benefits 🙌
 - No more need to look up the different names for packages
 - Takes care of using the most efficient way to compile the software
 - Using [hery](https://github.com/AmadlaOrg/hery) the requirements for the compilation and of a package can be defined making it portable
@@ -53,7 +53,7 @@ are the equivalent in the different package managers.
 > Since every piece of software needs to have their own entity configuration it is impossible to support all of them.
 > But as many as possible especially the most popular for server environments.
 
-## Use
+## 🕹️ Use
 ### Help
 ```bash
 lay --help|-h
