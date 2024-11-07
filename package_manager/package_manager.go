@@ -8,12 +8,12 @@ import (
 	"runtime"
 )
 
-type IPackage interface{}
+type IPackageManager interface{}
 
-type SPackage struct{}
+type SPackageManager struct{}
 
 // FindPackageManager
-func (s *SPackage) FindPackageManager(packageManagerName string) (string, error) {
+func (s *SPackageManager) FindPackageManager(packageManagerName string) (string, error) {
 	envPackageManager := os.Getenv("LAY_PACKAGE_MANAGER")
 	if envPackageManager != "" {
 		if runtime.GOOS == "windows" {
