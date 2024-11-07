@@ -1,2 +1,86 @@
 with-expecter: True
 packages:
+  github.com/AmadlaOrg/lay/container/docker:
+    interfaces:
+      IDocker:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockDocker"
+          inpackage: True
+  github.com/AmadlaOrg/lay/container/podman:
+    interfaces:
+      IPodman:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPodman"
+          inpackage: True
+  github.com/AmadlaOrg/lay/entity:
+    interfaces:
+      IEntity:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockEntity"
+          inpackage: True
+  github.com/AmadlaOrg/lay/package_manager:
+    interfaces:
+      IPackageManager:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPackageManager"
+          inpackage: True
+  github.com/AmadlaOrg/lay/package_manager/linux/apt:
+    interfaces:
+      IApt:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPackageManagerLinuxApt"
+          inpackage: True
+  github.com/AmadlaOrg/lay/package_manager/linux/dnf:
+    interfaces:
+      IDnf:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPackageManagerLinuxDnf"
+          inpackage: True
+  github.com/AmadlaOrg/lay/package_manager/linux/dpkg:
+    interfaces:
+      IDpkg:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPackageManagerLinuxDpkg"
+          inpackage: True
+  github.com/AmadlaOrg/lay/package_manager/linux/rpm:
+    interfaces:
+      IRpm:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPackageManagerLinuxRpm"
+          inpackage: True
+  github.com/AmadlaOrg/lay/package_manager/linux/yum:
+    interfaces:
+      IYum:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPackageManagerLinuxYum"
+          inpackage: True
+  github.com/AmadlaOrg/lay/package_manager/windows/choco:
+    interfaces:
+      IChoco:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPackageManagerWindowsChoco"
+          inpackage: True
+  github.com/AmadlaOrg/lay/package_manager/windows/scoop:
+    interfaces:
+      IScoop:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPackageManagerWindowsScoop"
+          inpackage: True
+  github.com/AmadlaOrg/lay/package_manager/windows/winget:
+    interfaces:
+      IWinget:
+        config:
+          dir: "{{.InterfaceDir}}"
+          mockName: "MockPackageManagerWindowsWinget"
+          inpackage: True
