@@ -64,7 +64,7 @@ also possible to specify what software and how it needs to be installed.
 lay --help|-h
 ```
 
-### With Entity (Amadla)
+### With Entity (Amadla 🐰)
 Amadla [Entity Application](https://github.com/AmadlaOrg/EntityApplication) is the entity that is supported.
 
 ```bash
@@ -102,6 +102,7 @@ lay container --engine|-e <container engine> <entity path> <software name>
 ## Env variables
 ```bash
 LAY_CONTAINER_ENGINE="podman"
+LAY_PACKAGE_MANAGER="apt"
 ```
 
 ## ©️ Copyright
