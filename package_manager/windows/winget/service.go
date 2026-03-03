@@ -1,6 +1,6 @@
 package winget
 
-// NewWingetService to set up the dpkg service
-func NewWingetService() IWinget {
-	return &SWinget{}
+// NewService creates a new winget package manager service
+func NewService() Manager {
+	return &Client{}
 }

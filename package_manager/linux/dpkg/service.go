@@ -1,6 +1,6 @@
 package dpkg
 
-// NewDpkgService to set up the dpkg service
-func NewDpkgService() IDpkg {
-	return &SDpkg{}
+// NewService creates a new dpkg package manager service
+func NewService() *Client {
+	return &Client{}
 }

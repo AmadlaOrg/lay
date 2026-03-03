@@ -1,6 +1,6 @@
 package choco
 
-// NewChocoService to set up the dpkg service
-func NewChocoService() IChoco {
-	return &SChoco{}
+// NewService creates a new choco package manager service
+func NewService() Manager {
+	return &Client{}
 }

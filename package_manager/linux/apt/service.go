@@ -1,6 +1,6 @@
 package apt
 
-// NewAptService to set up the apt service
-func NewAptService() IApt {
-	return &SApt{}
+// NewService creates a new apt package manager service
+func NewService() *Client {
+	return &Client{}
 }

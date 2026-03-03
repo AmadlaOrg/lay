@@ -1,5 +1,5 @@
 package entity
 
-type IEntity interface{}
+type Entity interface{}
 
-type SEntity struct{}
+type Service struct{}

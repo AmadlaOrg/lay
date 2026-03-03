@@ -1,6 +1,6 @@
 package docker
 
-// NewDockerService to set up the docker service
-func NewDockerService() IDocker {
-	return &SDocker{}
+// NewService creates a new docker container runtime service
+func NewService() *Client {
+	return &Client{}
 }

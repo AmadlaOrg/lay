@@ -1,6 +1,6 @@
 package scoop
 
-// NewScoopService to set up the dpkg service
-func NewScoopService() IScoop {
-	return &SScoop{}
+// NewService creates a new scoop package manager service
+func NewService() Manager {
+	return &Client{}
 }

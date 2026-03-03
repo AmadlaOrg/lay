@@ -1,6 +1,6 @@
 package dnf
 
-// NewDnfService to set up the dnf service
-func NewDnfService() IDnf {
-	return &SDnf{}
+// NewService creates a new dnf package manager service
+func NewService() *Client {
+	return &Client{}
 }

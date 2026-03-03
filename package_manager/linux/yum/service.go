@@ -1,6 +1,6 @@
 package yum
 
-// NewYumService to set up the dpkg service
-func NewYumService() IYum {
-	return &SYum{}
+// NewService creates a new yum package manager service
+func NewService() *Client {
+	return &Client{}
 }

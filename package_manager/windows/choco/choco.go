@@ -1,5 +1,5 @@
 package choco
 
-type IChoco interface{}
+type Manager interface{}
 
-type SChoco struct{}
+type Client struct{}

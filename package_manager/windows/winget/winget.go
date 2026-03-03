@@ -1,5 +1,5 @@
 package winget
 
-type IWinget interface{}
+type Manager interface{}
 
-type SWinget struct{}
+type Client struct{}

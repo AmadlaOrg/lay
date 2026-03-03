@@ -1,5 +1,5 @@
 package scoop
 
-type IScoop interface{}
+type Manager interface{}
 
-type SScoop struct{}
+type Client struct{}
