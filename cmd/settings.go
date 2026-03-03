@@ -1,34 +1,37 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
-	"os"
 )
 
+// SettingsCmd displays lay configuration and environment variables
 var SettingsCmd = &cobra.Command{
 	Use:   "settings",
-	Short: "List the paths and other environment variables for HERY",
+	Short: "List the paths and other environment variables for Lay",
 	Run: func(cmd *cobra.Command, args []string) {
-		/*storageService := storage.NewStorageService()
-		heryPath, err := storageService.Main()
-		if err != nil {
-			log.Fatal(err)
-		}*/
-
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetHeader([]string{"Setting", "Value"})
-		table.Append([]string{"Collections path", "..."})
 
-		/*envList, err := env.List()
-		if err != nil {
-			log.Fatal(err)
+		layPM := os.Getenv("LAY_PACKAGE_MANAGER")
+		if layPM == "" {
+			layPM = "(not set)"
 		}
+		table.Append([]string{"LAY_PACKAGE_MANAGER", layPM})
 
-		for _, varName := range envList {
-			val := os.Getenv(varName)
-			table.Append([]string{varName, val})
-		}*/
+		layRT := os.Getenv("LAY_CONTAINER_RUNTIME")
+		if layRT == "" {
+			layRT = "(not set)"
+		}
+		table.Append([]string{"LAY_CONTAINER_RUNTIME", layRT})
+
+		layBP := os.Getenv("LAY_BINARY_PATH")
+		if layBP == "" {
+			layBP = "(not set — default: ~/.local/bin)"
+		}
+		table.Append([]string{"LAY_BINARY_PATH", layBP})
 
 		table.Render()
 	},

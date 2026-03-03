@@ -6,11 +6,17 @@ type Values int
 
 // Enum values
 const (
-	apt Values = iota
-	dnf
-	dpkg
-	rpm
-	yum
+	aptVal Values = iota
+	dnfVal
+	dpkgVal
+	rpmVal
+	yumVal
+	pacmanVal
+	zypperVal
+	apkVal
+	nixVal
+	snapVal
+	flatpakVal
 )
 
 // String method to convert enum values to their string representation
@@ -21,6 +27,12 @@ func (r Values) String() string {
 		"dpkg",
 		"rpm",
 		"yum",
+		"pacman",
+		"zypper",
+		"apk",
+		"nix",
+		"snap",
+		"flatpak",
 	}
 
 	if int(r) < 0 || int(r) >= len(values) {
@@ -31,7 +43,7 @@ func (r Values) String() string {
 
 // Exists checks if a given package manager name exist
 func Exists(name string) bool {
-	for _, v := range [...]Values{apt, dnf, dpkg, rpm, yum} {
+	for _, v := range [...]Values{aptVal, dnfVal, dpkgVal, rpmVal, yumVal, pacmanVal, zypperVal, apkVal, nixVal, snapVal, flatpakVal} {
 		if v.String() == name {
 			return true
 		}

@@ -27,10 +27,10 @@ go.work.sum
 # Editor
 .idea/
 
-Makefile
-tests.sh
-
 # Build
-lay
+bin/
+
+# Reports
+.reports/
 
 allcode.txt

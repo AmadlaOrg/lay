@@ -1,0 +1,2 @@
+FROM fedora:39
+COPY lay /usr/local/bin/lay
