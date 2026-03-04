@@ -39,6 +39,16 @@ func (s *Client) Install(packages []string) error {
 	return cmd.Run()
 }
 
+// Remove removes packages using nix profile remove
+func (s *Client) Remove(packages []string) error {
+	args := append([]string{"-e"}, packages...)
+	cmd := execCommand("nix-env", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	return cmd.Run()
+}
+
 // Search searches for packages using nix search
 // Output format:
 // * nixpkgs#package (version)
@@ -90,4 +100,84 @@ func parseNixSearch(output string) []types.SearchResult {
 		})
 	}
 	return results
+}
+
+// Update runs nix flake update to refresh the flake lock file
+func (s *Client) Update() error {
+	cmd := execCommand("nix", "flake", "update")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	return cmd.Run()
+}
+
+// Upgrade upgrades packages. If packages is empty, upgrades all installed packages.
+// If packages are specified, upgrades them one at a time.
+func (s *Client) Upgrade(packages []string) error {
+	if len(packages) == 0 {
+		cmd := execCommand("nix", "profile", "upgrade", ".*")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Stdin = os.Stdin
+		return cmd.Run()
+	}
+
+	for _, pkg := range packages {
+		cmd := execCommand("nix", "profile", "upgrade", pkg)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Stdin = os.Stdin
+		if err := cmd.Run(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// List returns all installed packages from the user profile
+// Output format: "Index FlakeRef ResolvedRef StorePath"
+func (s *Client) List() ([]types.PackageInfo, error) {
+	cmd := execCommand("nix", "profile", "list")
+	out, err := cmd.Output()
+	if err != nil {
+		return nil, err
+	}
+	return parseNixList(string(out)), nil
+}
+
+func parseNixList(output string) []types.PackageInfo {
+	var results []types.PackageInfo
+	lines := strings.Split(output, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		// Format: "Index FlakeRef ResolvedRef StorePath"
+		// Example: "0 flake:nixpkgs#curl github:NixOS/nixpkgs/abc123#curl /nix/store/xxx-curl-8.5.0"
+		fields := strings.Fields(line)
+		if len(fields) < 2 {
+			continue
+		}
+		name := fields[1]
+		// Strip "flake:nixpkgs#" or similar prefix to get the package name
+		if idx := strings.Index(name, "#"); idx >= 0 {
+			name = name[idx+1:]
+		}
+		results = append(results, types.PackageInfo{
+			Name:    name,
+			Version: "",
+		})
+	}
+	return results
+}
+
+// IsInstalled checks whether a package is installed by searching nix profile list output
+func (s *Client) IsInstalled(pkg string) (bool, error) {
+	cmd := execCommand("nix", "profile", "list")
+	out, err := cmd.Output()
+	if err != nil {
+		return false, err
+	}
+	return strings.Contains(string(out), pkg), nil
 }

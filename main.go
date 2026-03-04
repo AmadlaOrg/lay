@@ -12,6 +12,7 @@ func main() {
 		"Lay",
 		"1.0.0",
 		func(rootCmd *cobra.Command) {
+			cmd.RegisterGlobalFlags(rootCmd)
 			rootCmd.AddCommand(cmd.PackageCmd)
 			rootCmd.AddCommand(cmd.ContainerCmd)
 			rootCmd.AddCommand(cmd.BinaryCmd)

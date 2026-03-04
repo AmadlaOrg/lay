@@ -3,6 +3,7 @@ package cmd
 import "github.com/spf13/cobra"
 
 var binaryToFlag string
+var binaryNameFlag string
 
 // BinaryCmd is the parent command for binary management operations
 var BinaryCmd = &cobra.Command{
@@ -22,6 +23,10 @@ Examples:
 
 func init() {
 	BinaryCmd.PersistentFlags().StringVar(&binaryToFlag, "to", "", "Override install directory (default: ~/.local/bin)")
+	BinaryCmd.PersistentFlags().StringVar(&binaryNameFlag, "name", "", "Override the installed command name")
 	BinaryCmd.AddCommand(binaryInstallCmd)
+	BinaryCmd.AddCommand(binaryRemoveCmd)
 	BinaryCmd.AddCommand(binaryCompileCmd)
+	BinaryCmd.AddCommand(binaryListCmd)
+	BinaryCmd.AddCommand(binaryUpdateCmd)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/AmadlaOrg/lay/output"
 	pm "github.com/AmadlaOrg/lay/package_manager"
 	"github.com/spf13/cobra"
 )
@@ -12,6 +13,7 @@ import (
 var (
 	newDetector      = pm.NewDetectorService
 	newManagerByName = pm.NewManagerByName
+	osExit           = os.Exit
 )
 
 var managerFlag string
@@ -23,24 +25,52 @@ var installCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		detector := newDetector()
-
-		name, err := detector.Detect(managerFlag)
-		if err != nil {
+		out := StdoutWriter()
+		if err := runInstall(detector, newManagerByName, managerFlag, args, out); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
-		}
-
-		manager, err := newManagerByName(name)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
-		}
-
-		fmt.Printf("Using package manager: %s\n", manager.Name())
-
-		if err := manager.Install(args); err != nil {
-			fmt.Fprintf(os.Stderr, "Error installing packages: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 	},
+}
+
+func runInstall(detector pm.Detector, managerFn func(string) (pm.Manager, error), override string, packages []string, out *output.Writer) error {
+	name, err := detector.Detect(override)
+	if err != nil {
+		return err
+	}
+
+	manager, err := managerFn(name)
+	if err != nil {
+		return err
+	}
+
+	out.Info("Using package manager: %s", manager.Name())
+
+	// Idempotency: check which packages are already installed
+	var toInstall []string
+	for _, pkg := range packages {
+		installed, err := manager.IsInstalled(pkg)
+		if err != nil {
+			// On error, proceed with install attempt
+			toInstall = append(toInstall, pkg)
+			continue
+		}
+		if installed {
+			out.Info("Already installed: %s", pkg)
+		} else {
+			toInstall = append(toInstall, pkg)
+		}
+	}
+
+	if len(toInstall) == 0 {
+		out.Info("All packages already installed")
+		return nil
+	}
+
+	if flagDryRun {
+		out.Info("[dry-run] Would install: %v", toInstall)
+		return nil
+	}
+
+	return manager.Install(toInstall)
 }

@@ -1,6 +1,6 @@
 package choco
 
 // NewService creates a new choco package manager service
-func NewService() Manager {
+func NewService() *Client {
 	return &Client{}
 }

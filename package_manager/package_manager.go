@@ -12,10 +12,18 @@ type SearchResult = types.SearchResult
 
 // Manager defines the interface for package manager operations
 type Manager interface {
-	Install(packages []string) error
-	Search(query string) ([]types.SearchResult, error)
 	Name() string
+	Install(packages []string) error
+	Remove(packages []string) error
+	Search(query string) ([]types.SearchResult, error)
+	Update() error
+	Upgrade(packages []string) error
+	List() ([]types.PackageInfo, error)
+	IsInstalled(pkg string) (bool, error)
 }
+
+// PackageInfo is re-exported from the types package for convenience
+type PackageInfo = types.PackageInfo
 
 // DetectorService handles package manager detection
 type DetectorService struct{}
@@ -41,7 +49,7 @@ func (s *DetectorService) Detect(managerOverride string) (string, error) {
 	}
 
 	// Auto-detect: try in priority order
-	for _, name := range []string{"apt", "dnf", "yum", "pacman", "zypper", "apk", "nix", "snap", "flatpak"} {
+	for _, name := range []string{"apt", "dnf", "yum", "pacman", "zypper", "apk", "nix", "snap", "flatpak", "brew", "choco", "scoop", "winget"} {
 		if _, err := execLookPath(name); err == nil {
 			return name, nil
 		}

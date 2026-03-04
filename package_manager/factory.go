@@ -14,6 +14,10 @@ import (
 	"github.com/AmadlaOrg/lay/package_manager/linux/snap"
 	"github.com/AmadlaOrg/lay/package_manager/linux/yum"
 	"github.com/AmadlaOrg/lay/package_manager/linux/zypper"
+	"github.com/AmadlaOrg/lay/package_manager/macos/brew"
+	"github.com/AmadlaOrg/lay/package_manager/windows/choco"
+	"github.com/AmadlaOrg/lay/package_manager/windows/scoop"
+	"github.com/AmadlaOrg/lay/package_manager/windows/winget"
 )
 
 // NewManagerByName returns a Manager implementation for the given name
@@ -41,6 +45,14 @@ func NewManagerByName(name string) (Manager, error) {
 		return dpkg.NewService(), nil
 	case "rpm":
 		return rpm.NewService(), nil
+	case "choco":
+		return choco.NewService(), nil
+	case "scoop":
+		return scoop.NewService(), nil
+	case "winget":
+		return winget.NewService(), nil
+	case "brew":
+		return brew.NewService(), nil
 	default:
 		return nil, fmt.Errorf("unsupported package manager: %s", name)
 	}

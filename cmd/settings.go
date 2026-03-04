@@ -1,38 +1,56 @@
 package cmd
 
 import (
+	"io"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
+// For testability
+var osGetenvSettings = os.Getenv
+
+type settingsData struct {
+	PackageManager   string `json:"package_manager"`
+	ContainerRuntime string `json:"container_runtime"`
+	BinaryPath       string `json:"binary_path"`
+}
+
 // SettingsCmd displays lay configuration and environment variables
 var SettingsCmd = &cobra.Command{
 	Use:   "settings",
 	Short: "List the paths and other environment variables for Lay",
 	Run: func(cmd *cobra.Command, args []string) {
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetHeader([]string{"Setting", "Value"})
+		out := StdoutWriter()
 
-		layPM := os.Getenv("LAY_PACKAGE_MANAGER")
-		if layPM == "" {
-			layPM = "(not set)"
+		layPM := osGetenvSettings("LAY_PACKAGE_MANAGER")
+		layRT := osGetenvSettings("LAY_CONTAINER_RUNTIME")
+		layBP := osGetenvSettings("LAY_BINARY_PATH")
+
+		data := settingsData{
+			PackageManager:   layPM,
+			ContainerRuntime: layRT,
+			BinaryPath:       layBP,
 		}
-		table.Append([]string{"LAY_PACKAGE_MANAGER", layPM})
 
-		layRT := os.Getenv("LAY_CONTAINER_RUNTIME")
-		if layRT == "" {
-			layRT = "(not set)"
-		}
-		table.Append([]string{"LAY_CONTAINER_RUNTIME", layRT})
+		out.Result(data, func(w io.Writer) {
+			if data.PackageManager == "" {
+				data.PackageManager = "(not set)"
+			}
+			if data.ContainerRuntime == "" {
+				data.ContainerRuntime = "(not set)"
+			}
+			if data.BinaryPath == "" {
+				data.BinaryPath = "(not set — default: ~/.local/bin)"
+			}
 
-		layBP := os.Getenv("LAY_BINARY_PATH")
-		if layBP == "" {
-			layBP = "(not set — default: ~/.local/bin)"
-		}
-		table.Append([]string{"LAY_BINARY_PATH", layBP})
-
-		table.Render()
+			table := tablewriter.NewWriter(os.Stdout)
+			table.SetHeader([]string{"Setting", "Value"})
+			table.Append([]string{"LAY_PACKAGE_MANAGER", data.PackageManager})
+			table.Append([]string{"LAY_CONTAINER_RUNTIME", data.ContainerRuntime})
+			table.Append([]string{"LAY_BINARY_PATH", data.BinaryPath})
+			table.Render()
+		})
 	},
 }

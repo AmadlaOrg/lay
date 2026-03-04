@@ -11,7 +11,8 @@ so you don't have to look up per-distro package names or build flags.
 ## Features
 
 - **Binary install** from GitHub, GitLab, or Codeberg releases with automatic
-  platform detection, version pinning, and direct URL support
+  platform detection, version pinning, direct URL support, and JAR application
+  support
 - **Compile from source** with auto-detected build system (autotools, cmake,
   meson, make, cargo, go)
 - **System package management** across distros (apt, dnf, yum, pacman, zypper,
@@ -49,6 +50,15 @@ lay binary install --to /opt/bin BurntSushi/ripgrep
 
 # Direct URL (any host)
 lay binary install https://example.com/tool-linux-amd64.tar.gz
+
+# JAR application (creates a launcher script wrapping java -jar)
+lay binary install ~/Downloads/tika-app-3.2.3.jar
+
+# JAR with custom command name
+lay binary install ~/Downloads/tika-app-3.2.3.jar --name tika
+
+# Forge release with only JAR assets (auto-detected)
+lay binary install apache/tika
 ```
 
 ### Binary compile
@@ -93,6 +103,22 @@ lay container --runtime docker ps
 # Show current configuration
 lay settings
 ```
+
+### JAR applications
+
+When installing a `.jar` file (locally or from a forge release), lay:
+
+1. Verifies that Java is installed and available in `PATH`
+2. Copies the JAR to `~/.local/share/lay/jars/`
+3. Creates a launcher script in the target directory that wraps `java -jar`
+
+The command name is derived automatically by stripping the `.jar` extension and
+version suffix (e.g. `tika-app-3.2.3.jar` becomes `tika-app`). Use `--name` to
+override.
+
+For forge sources, if no native binary matches the current platform, lay falls
+back to JAR assets automatically. It excludes `-sources`, `-javadoc`, and
+`-tests` JARs and prefers fat/standalone/app JARs.
 
 ## Environment Variables
 

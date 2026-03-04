@@ -5,6 +5,7 @@ import (
 	"os"
 
 	ct "github.com/AmadlaOrg/lay/container"
+	"github.com/AmadlaOrg/lay/output"
 	"github.com/spf13/cobra"
 )
 
@@ -83,23 +84,30 @@ func extractRuntimeFlag(args []string) (string, []string) {
 
 func execWithRuntime(runtimeOverride string, args []string) {
 	detector := newContainerDetector()
+	out := StdoutWriter()
+	if err := runExecWithRuntime(detector, newRuntimeByName, runtimeOverride, args, out); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		osExit(1)
+	}
+}
 
-	name, err := detector.Detect(runtimeOverride)
+func runExecWithRuntime(detector ct.Detector, runtimeFn func(string) (ct.Runtime, error), override string, args []string, out *output.Writer) error {
+	name, err := detector.Detect(override)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 
-	runtime, err := newRuntimeByName(name)
+	runtime, err := runtimeFn(name)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 
-	fmt.Fprintf(os.Stderr, "Using container runtime: %s\n", runtime.Name())
+	out.Info("Using container runtime: %s", runtime.Name())
 
-	if err := runtime.Exec(args); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
+	if flagDryRun {
+		out.Info("[dry-run] Would execute: %s %v", runtime.Name(), args)
+		return nil
 	}
+
+	return runtime.Exec(args)
 }

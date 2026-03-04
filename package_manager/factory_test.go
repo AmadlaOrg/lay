@@ -70,10 +70,30 @@ func TestNewManagerByName(t *testing.T) {
 			expectName: "rpm",
 		},
 		{
+			name:       "choco returns choco manager",
+			input:      "choco",
+			expectName: "choco",
+		},
+		{
+			name:       "scoop returns scoop manager",
+			input:      "scoop",
+			expectName: "scoop",
+		},
+		{
+			name:       "winget returns winget manager",
+			input:      "winget",
+			expectName: "winget",
+		},
+		{
+			name:       "brew returns brew manager",
+			input:      "brew",
+			expectName: "brew",
+		},
+		{
 			name:        "unknown name returns error",
-			input:       "brew",
+			input:       "yast",
 			expectErr:   true,
-			errContains: "unsupported package manager: brew",
+			errContains: "unsupported package manager: yast",
 		},
 		{
 			name:        "empty name returns error",

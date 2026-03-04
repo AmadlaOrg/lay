@@ -36,24 +36,25 @@ Examples:
   lay binary compile user/repo`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		out := StdoutWriter()
 		tgt := newCompileTargetService()
 
 		targetDir, err := tgt.Resolve(binaryToFlag)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error resolving target directory: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 
 		if err := tgt.Ensure(targetDir); err != nil {
 			fmt.Fprintf(os.Stderr, "Error creating target directory: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 
 		// Clone or resolve local source
 		srcDir, cleanup, err := compile.CloneOrDownload(args[0])
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 		defer cleanup()
 
@@ -62,29 +63,34 @@ Examples:
 		buildSystem, err := detector.Detect(srcDir, buildSystemFlag)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 
-		fmt.Printf("Detected build system: %s\n", buildSystem)
+		out.Info("Detected build system: %s", buildSystem)
+
+		if flagDryRun {
+			out.Info("[dry-run] Would compile %s using %s and install to %s", args[0], buildSystem, targetDir)
+			return
+		}
 
 		// Get build system implementation
 		bs, err := newBuildSystemByName(buildSystem)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 
 		// Build into a temporary prefix directory
 		tmpBuildDir, err := os.MkdirTemp("", "lay-build-*")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error creating build directory: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 		defer os.RemoveAll(tmpBuildDir)
 
 		if err := bs.Build(srcDir, tmpBuildDir); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 
 		// Find the built binary and copy to target
@@ -94,22 +100,22 @@ Examples:
 			binaryPath, err = install.FindBinary(srcDir, filepath.Base(srcDir))
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error finding built binary: %v\n", err)
-				os.Exit(1)
+				osExit(1)
 			}
 		}
 
 		destPath := filepath.Join(targetDir, filepath.Base(binaryPath))
 		if err := copyBinaryFile(binaryPath, destPath); err != nil {
 			fmt.Fprintf(os.Stderr, "Error copying binary: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 
 		if err := os.Chmod(destPath, 0755); err != nil {
 			fmt.Fprintf(os.Stderr, "Error setting permissions: %v\n", err)
-			os.Exit(1)
+			osExit(1)
 		}
 
-		fmt.Printf("Installed %s to %s\n", filepath.Base(binaryPath), destPath)
+		out.Info("Installed %s to %s", filepath.Base(binaryPath), destPath)
 	},
 }
 

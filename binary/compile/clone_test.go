@@ -72,3 +72,27 @@ func TestCloneOrDownload_GitURL(t *testing.T) {
 	assert.Equal(t, "1", capturedArgs[3])
 	assert.Equal(t, "https://github.com/user/repo.git", capturedArgs[4])
 }
+
+func TestCloneOrDownload_CloneFailure(t *testing.T) {
+	if os.Getenv("GO_WANT_HELPER_PROCESS") == "1" {
+		os.Exit(1)
+	}
+
+	origCmd := execCommand
+	defer func() { execCommand = origCmd }()
+
+	execCommand = func(name string, args ...string) *exec.Cmd {
+		cs := []string{"-test.run=TestCloneOrDownload_CloneFailure", "--", name}
+		cs = append(cs, args...)
+		cmd := exec.Command(os.Args[0], cs...)
+		cmd.Env = []string{"GO_WANT_HELPER_PROCESS=1"}
+		return cmd
+	}
+
+	srcDir, cleanup, err := CloneOrDownload("user/repo")
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to clone")
+	assert.Empty(t, srcDir)
+	cleanup() // should be safe to call (noop)
+}

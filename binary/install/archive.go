@@ -9,6 +9,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/ulikunitz/xz"
 )
 
 // ArchiveType represents the type of archive
@@ -48,6 +50,11 @@ func Extract(archivePath string, archiveType ArchiveType) (string, error) {
 	switch archiveType {
 	case ArchiveTarGz:
 		if err := extractTarGz(archivePath, destDir); err != nil {
+			os.RemoveAll(destDir)
+			return "", err
+		}
+	case ArchiveTarXz:
+		if err := extractTarXz(archivePath, destDir); err != nil {
 			os.RemoveAll(destDir)
 			return "", err
 		}
@@ -142,6 +149,59 @@ func extractTarGz(archivePath, destDir string) error {
 	defer gz.Close()
 
 	tr := tar.NewReader(gz)
+	for {
+		header, err := tr.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("failed to read tar entry: %w", err)
+		}
+
+		target := filepath.Join(destDir, filepath.Clean(header.Name))
+
+		// Prevent path traversal
+		if !strings.HasPrefix(target, filepath.Clean(destDir)+string(os.PathSeparator)) && target != filepath.Clean(destDir) {
+			continue
+		}
+
+		switch header.Typeflag {
+		case tar.TypeDir:
+			if err := os.MkdirAll(target, 0755); err != nil {
+				return err
+			}
+		case tar.TypeReg:
+			if err := os.MkdirAll(filepath.Dir(target), 0755); err != nil {
+				return err
+			}
+			outFile, err := os.OpenFile(target, os.O_CREATE|os.O_WRONLY, os.FileMode(header.Mode))
+			if err != nil {
+				return err
+			}
+			if _, err := io.Copy(outFile, tr); err != nil {
+				outFile.Close()
+				return err
+			}
+			outFile.Close()
+		}
+	}
+
+	return nil
+}
+
+func extractTarXz(archivePath, destDir string) error {
+	f, err := os.Open(archivePath)
+	if err != nil {
+		return fmt.Errorf("failed to open archive: %w", err)
+	}
+	defer f.Close()
+
+	xzReader, err := xz.NewReader(f)
+	if err != nil {
+		return fmt.Errorf("failed to create xz reader: %w", err)
+	}
+
+	tr := tar.NewReader(xzReader)
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {

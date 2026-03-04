@@ -47,3 +47,26 @@ func TestValuesEnum(t *testing.T) {
 		})
 	}
 }
+
+func TestExists(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected bool
+	}{
+		{"choco exists", "choco", true},
+		{"scoop exists", "scoop", true},
+		{"winget exists", "winget", true},
+		{"unknown doesn't exist", "apt", false},
+		{"empty doesn't exist", "", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Exists(tt.input)
+			if got != tt.expected {
+				t.Errorf("Exists(%q) = %v, want %v", tt.input, got, tt.expected)
+			}
+		})
+	}
+}
