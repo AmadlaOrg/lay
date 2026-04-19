@@ -16,7 +16,7 @@ var buildSystemFlag string
 // For testability
 var (
 	newCompileTargetService = target.NewService
-	newCompileDetector      = compile.NewDetectorService
+	newCompileDetector      = compile.New
 	newBuildSystemByName    = compile.NewBuildSystemByName
 )
 

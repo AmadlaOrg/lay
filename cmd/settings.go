@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 	"github.com/spf13/cobra"
 )
 
@@ -45,8 +46,11 @@ var SettingsCmd = &cobra.Command{
 				data.BinaryPath = "(not set — default: ~/.local/bin)"
 			}
 
-			table := tablewriter.NewWriter(os.Stdout)
-			table.SetHeader([]string{"Setting", "Value"})
+			table := tablewriter.NewTable(os.Stdout,
+				tablewriter.WithHeaderAlignment(tw.AlignLeft),
+				tablewriter.WithRowAlignment(tw.AlignLeft),
+			)
+			table.Header([]string{"Setting", "Value"})
 			table.Append([]string{"LAY_PACKAGE_MANAGER", data.PackageManager})
 			table.Append([]string{"LAY_CONTAINER_RUNTIME", data.ContainerRuntime})
 			table.Append([]string{"LAY_BINARY_PATH", data.BinaryPath})

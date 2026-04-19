@@ -10,7 +10,7 @@ type Detector interface {
 	Detect(managerOverride string) (string, error)
 }
 
-// NewDetectorService creates a new detector service
-func NewDetectorService() Detector {
+// New creates a new Detector.
+func New() Detector {
 	return &DetectorService{}
 }

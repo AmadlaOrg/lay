@@ -8,6 +8,7 @@ import (
 	"github.com/AmadlaOrg/lay/output"
 	pm "github.com/AmadlaOrg/lay/package_manager"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 	"github.com/spf13/cobra"
 )
 
@@ -50,13 +51,15 @@ func runList(detector pm.Detector, managerFn func(string) (pm.Manager, error), o
 	out.Result(packages, func(w io.Writer) {
 		fmt.Fprintf(w, "Installed packages (%s): %d\n\n", manager.Name(), len(packages))
 
-		table := tablewriter.NewWriter(w)
-		table.SetHeader([]string{"Name", "Version"})
-		table.SetAutoWrapText(false)
-		table.SetBorder(false)
-		table.SetColumnSeparator(" ")
-		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-		table.SetAlignment(tablewriter.ALIGN_LEFT)
+		table := tablewriter.NewTable(w,
+			tablewriter.WithHeaderAlignment(tw.AlignLeft),
+			tablewriter.WithRowAlignment(tw.AlignLeft),
+			tablewriter.WithRowAutoWrap(tw.WrapNone),
+			tablewriter.WithRendition(tw.Rendition{
+				Borders: tw.Border{Left: tw.Off, Right: tw.Off, Top: tw.Off, Bottom: tw.Off},
+			}),
+		)
+		table.Header([]string{"Name", "Version"})
 
 		for _, p := range packages {
 			table.Append([]string{p.Name, p.Version})

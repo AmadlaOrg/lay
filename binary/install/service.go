@@ -1,11 +1,11 @@
 package install
 
-// NewInstallService creates a new install service
-func NewInstallService() Installer {
+// New creates a new Installer.
+func New() Installer {
 	return &Service{}
 }
 
-// NewInstallServiceWithName creates a new install service with a command name override
-func NewInstallServiceWithName(name string) Installer {
+// NewWithName creates a new Installer with a command name override.
+func NewWithName(name string) Installer {
 	return &Service{NameOverride: name}
 }

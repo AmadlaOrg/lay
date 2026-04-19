@@ -11,7 +11,7 @@ import (
 
 // For testability
 var (
-	newDetector      = pm.NewDetectorService
+	newDetector      = pm.New
 	newManagerByName = pm.NewManagerByName
 	osExit           = os.Exit
 )

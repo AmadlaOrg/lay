@@ -1,6 +1,6 @@
 package compile
 
-// NewDetectorService creates a new build system detector
-func NewDetectorService() Detector {
+// New creates a new Detector.
+func New() Detector {
 	return &DetectorService{}
 }

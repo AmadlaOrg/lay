@@ -8,6 +8,7 @@ import (
 	"github.com/AmadlaOrg/lay/binary/manifest"
 	"github.com/AmadlaOrg/lay/output"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 	"github.com/spf13/cobra"
 )
 
@@ -45,13 +46,15 @@ func runBinaryList(store manifest.Store, w io.Writer, out *output.Writer) error 
 	out.Result(m.Entries, func(w io.Writer) {
 		fmt.Fprintf(w, "Installed binaries: %d\n\n", len(m.Entries))
 
-		table := tablewriter.NewWriter(w)
-		table.SetHeader([]string{"Name", "Version", "Source", "Path"})
-		table.SetAutoWrapText(false)
-		table.SetBorder(false)
-		table.SetColumnSeparator(" ")
-		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-		table.SetAlignment(tablewriter.ALIGN_LEFT)
+		table := tablewriter.NewTable(w,
+			tablewriter.WithHeaderAlignment(tw.AlignLeft),
+			tablewriter.WithRowAlignment(tw.AlignLeft),
+			tablewriter.WithRowAutoWrap(tw.WrapNone),
+			tablewriter.WithRendition(tw.Rendition{
+				Borders: tw.Border{Left: tw.Off, Right: tw.Off, Top: tw.Off, Bottom: tw.Off},
+			}),
+		)
+		table.Header([]string{"Name", "Version", "Source", "Path"})
 
 		for _, e := range m.Entries {
 			table.Append([]string{e.Name, e.Version, e.Source, e.Path})

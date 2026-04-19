@@ -8,6 +8,7 @@ import (
 	"github.com/AmadlaOrg/lay/output"
 	pm "github.com/AmadlaOrg/lay/package_manager"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 	"github.com/spf13/cobra"
 )
 
@@ -56,7 +57,14 @@ func runSearch(detector pm.Detector, managerFn func(string) (pm.Manager, error),
 func renderSearchResults(w io.Writer, managerName string, results []pm.SearchResult) {
 	fmt.Fprintf(w, "Search results (%s):\n\n", managerName)
 
-	table := tablewriter.NewWriter(w)
+	table := tablewriter.NewTable(w,
+		tablewriter.WithHeaderAlignment(tw.AlignLeft),
+		tablewriter.WithRowAlignment(tw.AlignLeft),
+		tablewriter.WithRowAutoWrap(tw.WrapNone),
+		tablewriter.WithRendition(tw.Rendition{
+			Borders: tw.Border{Left: tw.Off, Right: tw.Off, Top: tw.Off, Bottom: tw.Off},
+		}),
+	)
 
 	// Check if any results have versions
 	hasVersions := false
@@ -68,16 +76,10 @@ func renderSearchResults(w io.Writer, managerName string, results []pm.SearchRes
 	}
 
 	if hasVersions {
-		table.SetHeader([]string{"Name", "Version", "Description"})
+		table.Header([]string{"Name", "Version", "Description"})
 	} else {
-		table.SetHeader([]string{"Name", "Description"})
+		table.Header([]string{"Name", "Description"})
 	}
-
-	table.SetAutoWrapText(false)
-	table.SetBorder(false)
-	table.SetColumnSeparator(" ")
-	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
 
 	for _, r := range results {
 		desc := r.Description

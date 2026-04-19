@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewDetectorService(t *testing.T) {
-	d := NewDetectorService()
+func TestNew(t *testing.T) {
+	d := New()
 	assert.NotNil(t, d)
 }

@@ -15,8 +15,8 @@ import (
 // For testability
 var (
 	newTargetService         = target.NewService
-	newInstallService        = install.NewInstallService
-	newInstallServiceWithName = install.NewInstallServiceWithName
+	newInstallService        = install.New
+	newInstallServiceWithName = install.NewWithName
 	newManifestStore         = func() (manifest.Store, error) { return manifest.NewFileStore() }
 )
 

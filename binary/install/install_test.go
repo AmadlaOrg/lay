@@ -366,13 +366,13 @@ func TestService_Install_DirectURL_BadStatus(t *testing.T) {
 	assert.Contains(t, err.Error(), "failed to download")
 }
 
-func TestNewInstallService(t *testing.T) {
-	svc := NewInstallService()
+func TestNew(t *testing.T) {
+	svc := New()
 	assert.NotNil(t, svc)
 }
 
-func TestNewInstallServiceWithName(t *testing.T) {
-	svc := NewInstallServiceWithName("custom")
+func TestNewWithName(t *testing.T) {
+	svc := NewWithName("custom")
 	assert.NotNil(t, svc)
 	s, ok := svc.(*Service)
 	assert.True(t, ok)

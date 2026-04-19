@@ -11,7 +11,7 @@ import (
 
 // For testability
 var (
-	newContainerDetector = ct.NewDetectorService
+	newContainerDetector = ct.New
 	newRuntimeByName     = ct.NewRuntimeByName
 )
 
